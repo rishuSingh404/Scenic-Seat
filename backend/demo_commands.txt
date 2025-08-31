@@ -1,0 +1,67 @@
+# Scenic Seat API Demo Commands
+
+## Health Check
+curl -X GET http://localhost:8000/healthz
+
+## POST /recommend - Delhi to Singapore Example (Frozen Contract)
+curl -X POST http://localhost:8000/recommend \
+  -H "Content-Type: application/json" \
+  -d '{
+    "origin": {"name":"Delhi","lat":28.5562,"lon":77.1000,"tz":"Asia/Kolkata"},
+    "destination": {"name":"Singapore","lat":1.3644,"lon":103.9915,"tz":"Asia/Singapore"},
+    "local_datetime": "2025-09-10T06:00:00",
+    "interest": "sunrise"
+  }'
+
+## POST /recommend - London to Cairo Example  
+curl -X POST http://localhost:8000/recommend \
+  -H "Content-Type: application/json" \
+  -d '{
+    "origin": {"name":"London","lat":51.5074,"lon":-0.1278,"tz":"Europe/London"},
+    "destination": {"name":"Cairo","lat":30.0444,"lon":31.2357,"tz":"Africa/Cairo"},
+    "local_datetime": "2025-06-21T12:00:00",
+    "interest": "sunset"
+  }'
+
+## Error Case - City Not Found
+curl -X POST http://localhost:8000/recommend \
+  -H "Content-Type: application/json" \
+  -d '{
+    "origin": {"name":"NonexistentCity","lat":28.5562,"lon":77.1000,"tz":"Asia/Kolkata"},
+    "destination": {"name":"Singapore","lat":1.3644,"lon":103.9915,"tz":"Asia/Singapore"},
+    "local_datetime": "2025-09-10T06:00:00",
+    "interest": "sunrise"
+  }'
+
+## POST /export-pdf - Generate PDF Report
+# First get recommendation, then use in PDF request:
+curl -X POST http://localhost:8000/export-pdf \
+  -H "Content-Type: application/json" \
+  -d '{
+    "recommendation": {
+      "side": "LEFT",
+      "confidence": "HIGH",
+      "bearing_deg": 131.9,
+      "sun_azimuth_deg": 83.5,
+      "relative_angle_deg": -48.4,
+      "golden_hour": true,
+      "phase_times": {
+        "civil_dawn": "2025-09-10T05:40:09+05:30",
+        "sunrise": "2025-09-10T06:04:21+05:30",
+        "sunset": "2025-09-10T18:32:23+05:30",
+        "civil_dusk": "2025-09-10T18:56:33+05:30"
+      },
+      "midpoint": {
+        "lat": 15.4,
+        "lon": 91.4,
+        "sun_azimuth_deg": 87.8
+      },
+      "stability": "MEDIUM",
+      "notes": "Sun on left side of flight path; departure snapshot; great-circle assumption."
+    },
+    "map_png_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+  }' \
+  --output scenic_seat_report.pdf
+
+
+

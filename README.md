@@ -389,6 +389,3 @@ MIT License - see LICENSE file for details.
 
 **Built with ❤️ for travelers who love the perfect view**
 
-*For questions or support, please open an issue on GitHub.*
-#   S c e n i c - S e a t  
- 
